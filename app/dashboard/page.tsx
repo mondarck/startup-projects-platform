@@ -37,7 +37,6 @@ export default function DashboardPage() {
   const [reservation, setReservation] = useState<Reservation | null>(null);
   const [savedProjects, setSavedProjects] = useState<SavedProject[]>([]);
   const [loading, setLoading] = useState(true);
-  const [cancelLoading, setCancelLoading] = useState(false);
 
   useEffect(() => {
     if (status === "loading") return;
@@ -56,16 +55,6 @@ export default function DashboardPage() {
     if (resData.success) setReservation(resData.data);
     if (savedData.success) setSavedProjects(savedData.data);
     setLoading(false);
-  }
-
-  async function handleCancelReservation() {
-    if (!confirm("هل أنت متأكد من إلغاء الحجز؟")) return;
-    setCancelLoading(true);
-    const res = await fetch("/api/reservations", { method: "DELETE" });
-    if (res.ok) {
-      setReservation(null);
-    }
-    setCancelLoading(false);
   }
 
   async function handleUnsave(projectId: number) {
@@ -159,21 +148,12 @@ export default function DashboardPage() {
                   تم الحجز: {formatDate(reservation.reservedAt)}
                 </p>
               </div>
-              <div className="flex gap-3">
-                <Link
-                  href={`/projects/${reservation.projectId}`}
-                  className="px-4 py-2 bg-secondary text-white rounded-lg text-sm hover:bg-secondary-dark transition"
-                >
-                  عرض
-                </Link>
-                <button
-                  onClick={handleCancelReservation}
-                  disabled={cancelLoading}
-                  className="px-4 py-2 border-2 border-red-300 text-red-500 rounded-lg text-sm hover:bg-red-50 transition disabled:opacity-50"
-                >
-                  {cancelLoading ? "..." : "إلغاء"}
-                </button>
-              </div>
+              <Link
+                href={`/projects/${reservation.projectId}`}
+                className="px-4 py-2 bg-secondary text-white rounded-lg text-sm hover:bg-secondary-dark transition"
+              >
+                عرض المشروع
+              </Link>
             </div>
           ) : (
             <div className="text-center py-8">

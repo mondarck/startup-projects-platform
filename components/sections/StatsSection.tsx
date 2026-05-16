@@ -3,28 +3,25 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
-interface Stats {
-  totalProjects: number;
-  availableProjects: number;
-  totalStudents: number;
-  activeReservations: number;
-}
-
 export function StatsSection() {
-  const [stats, setStats] = useState<Stats | null>(null);
+  const [totalProjects, setTotalProjects] = useState<number | null>(null);
+  const [availableProjects, setAvailableProjects] = useState<number | null>(null);
 
   useEffect(() => {
     fetch("/api/stats")
       .then((r) => r.json())
-      .then((d) => { if (d.success) setStats(d.data); })
+      .then((d) => {
+        if (d.success) {
+          setTotalProjects(d.data.totalProjects);
+          setAvailableProjects(d.data.availableProjects);
+        }
+      })
       .catch(() => {});
   }, []);
 
   const items = [
-    { label: "المشاريع الكلية", value: stats ? stats.totalProjects.toLocaleString("ar-DZ") : "…", color: "from-primary" },
-    { label: "المشاريع المتاحة", value: stats ? stats.availableProjects.toLocaleString("ar-DZ") : "…", color: "from-secondary" },
-    { label: "الطلبة المسجلين", value: stats ? stats.totalStudents.toLocaleString("ar-DZ") : "…", color: "from-accent" },
-    { label: "الحجوزات النشطة", value: stats ? stats.activeReservations.toLocaleString("ar-DZ") : "…", color: "from-purple-600" },
+    { label: "المشاريع الكلية", value: totalProjects !== null ? totalProjects.toLocaleString("ar-DZ") : "…", color: "from-primary", icon: "🚀" },
+    { label: "المشاريع المتاحة للحجز", value: availableProjects !== null ? availableProjects.toLocaleString("ar-DZ") : "…", color: "from-secondary", icon: "✅" },
   ];
 
   return (
@@ -39,25 +36,26 @@ export function StatsSection() {
           إحصائيات المنصة
         </motion.h2>
 
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="flex justify-center gap-10 flex-wrap">
           {items.map((stat, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className={`bg-gradient-to-br ${stat.color} to-transparent rounded-xl p-8 text-center`}
+              transition={{ delay: index * 0.15 }}
+              className={`bg-gradient-to-br ${stat.color} to-transparent rounded-2xl p-12 text-center min-w-[260px]`}
             >
+              <div className="text-5xl mb-4">{stat.icon}</div>
               <motion.div
-                className="text-4xl font-bold mb-2"
+                className="text-5xl font-bold mb-3"
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
-                transition={{ delay: index * 0.1 + 0.2 }}
+                transition={{ delay: index * 0.15 + 0.2 }}
               >
                 {stat.value}
               </motion.div>
-              <p className="text-gray-200">{stat.label}</p>
+              <p className="text-gray-200 text-lg">{stat.label}</p>
             </motion.div>
           ))}
         </div>
