@@ -15,17 +15,14 @@ export async function PATCH(
   const { action } = await req.json();
   const userId = params.id;
 
-  // Cancel student reservation
+  // Cancel student reservation — delete the record so the student can reserve again
   if (action === "cancel_reservation") {
     const reservation = await prisma.reservation.findUnique({ where: { userId } });
     if (!reservation) {
       return NextResponse.json({ success: false, error: "لا يوجد حجز نشط لهذا الطالب" }, { status: 404 });
     }
     await prisma.$transaction([
-      prisma.reservation.update({
-        where: { userId },
-        data: { status: "cancelled", cancelledAt: new Date(), reasonForCancel: "إلغاء بواسطة المدير" },
-      }),
+      prisma.reservation.delete({ where: { userId } }),
       prisma.project.update({
         where: { id: reservation.projectId },
         data: { status: "available" },

@@ -10,8 +10,8 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const reservation = await prisma.reservation.findUnique({
-      where: { userId: session.user.id },
+    const reservation = await prisma.reservation.findFirst({
+      where: { userId: session.user.id, status: "active" },
       include: {
         project: {
           select: {
@@ -42,9 +42,9 @@ export async function POST(req: NextRequest) {
   try {
     const { projectId, studentNotes } = await req.json();
 
-    // Check existing reservation
-    const existing = await prisma.reservation.findUnique({
-      where: { userId: session.user.id },
+    // Check existing active reservation
+    const existing = await prisma.reservation.findFirst({
+      where: { userId: session.user.id, status: "active" },
     });
     if (existing) {
       return NextResponse.json(
