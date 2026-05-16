@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Faculty {
+  id        Int      @id @default(autoincrement())
+  nameAr    String   @map("name_ar")
+  nameEn    String?  @map("name_en")
+  code      String   @unique
+  users     User[]
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("faculties")
+}
+
+model User {
+  id           String    @id @default(uuid())
+  firstName    String    @map("first_name")
+  lastName     String    @map("last_name")
+  email        String    @unique
+  phone        String
+  universityId String    @unique @map("university_id")
+  passwordHash String    @map("password_hash")
+  facultyId    Int       @map("faculty_id")
+  faculty      Faculty   @relation(fields: [facultyId], references: [id])
+
+  status       String    @default("pending") // pending | active | suspended
+  isVerified   Boolean   @default(false) @map("is_verified")
+
+  profileImageUrl String? @map("profile_image_url")
+  bio             String?
+
+  reservation  Reservation?
+  savedProjects SavedProject[]
+  activityLogs ActivityLog[]
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  lastLogin DateTime? @map("last_login")
+
+  @@map("users")
+}
+
+model Admin {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+  fullName     String    @map("full_name")
+  role         String    @default("admin") // super_admin | admin | moderator
+  isActive     Boolean   @default(true) @map("is_active")
+
+  activityLogs ActivityLog[]
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  lastLogin DateTime? @map("last_login")
+
+  @@map("admins")
+}
+
+model Project {
+  id          Int    @id @default(autoincrement())
+  number      Int    @unique
+  nameAr      String @map("name_ar")
+  nameEn      String? @map("name_en")
+  country     String?
+  categoryAr  String @map("category_ar")
+  categoryEn  String? @map("category_en")
+  descriptionAr String @map("description_ar")
+  descriptionEn String? @map("description_en")
+
+  imageUrl    String? @map("image_url")
+  status      String  @default("available") // available | reserved | archived
+  isFeatured  Boolean @default(false) @map("is_featured")
+
+  viewsCount  Int     @default(0) @map("views_count")
+  savedCount  Int     @default(0) @map("saved_count")
+  rating      Float   @default(0)
+
+  reservation   Reservation?
+  savedProjects SavedProject[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("projects")
+}
+
+model Reservation {
+  id        String  @id @default(uuid())
+  userId    String  @unique @map("user_id")
+  projectId Int     @unique @map("project_id")
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project   Project @relation(fields: [projectId], references: [id])
+
+  status          String  @default("active") // active | cancelled | completed
+  reasonForCancel String? @map("reason_for_cancel")
+  cancelledAt     DateTime? @map("cancelled_at")
+  studentNotes    String? @map("student_notes")
+  adminNotes      String? @map("admin_notes")
+
+  reservedAt DateTime @default(now()) @map("reserved_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("reservations")
+}
+
+model SavedProject {
+  id        String  @id @default(uuid())
+  userId    String  @map("user_id")
+  projectId Int     @map("project_id")
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  notes   String?
+  savedAt DateTime @default(now()) @map("saved_at")
+
+  @@unique([userId, projectId])
+  @@map("saved_projects")
+}
+
+model ActivityLog {
+  id         BigInt  @id @default(autoincrement())
+  userId     String? @map("user_id")
+  adminId    String? @map("admin_id")
+  user       User?   @relation(fields: [userId], references: [id])
+  admin      Admin?  @relation(fields: [adminId], references: [id])
+
+  actionType  String  @map("action_type")
+  entityType  String? @map("entity_type")
+  entityId    Int?    @map("entity_id")
+  description String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("activity_logs")
+}
