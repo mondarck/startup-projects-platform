@@ -41,17 +41,19 @@ export async function GET(req: NextRequest) {
       prisma.faculty.findMany({ select: { id: true, nameAr: true } }),
     ]);
 
-    const facultyMap = Object.fromEntries(faculties.map((f) => [f.id, f.nameAr]));
+    // Faculty.id is Int — build map with string keys for safe indexing
+    const facultyMap: Record<string, string> = {};
+    for (const f of faculties) {
+      facultyMap[String(f.id)] = f.nameAr;
+    }
 
     return NextResponse.json({
       success: true,
       data: {
-        byFaculty: byFacultyRaw
-          .filter((f) => f.facultyId !== null)
-          .map((f) => ({
-            faculty: facultyMap[f.facultyId as string] ?? "غير معروف",
-            count: f._count.facultyId,
-          })),
+        byFaculty: byFacultyRaw.map((f) => ({
+          faculty: facultyMap[String(f.facultyId)] ?? "غير معروف",
+          count: f._count.facultyId,
+        })),
         byCategory: byCategory.map((c) => ({
           category: c.categoryAr,
           count: c._count.categoryAr,
