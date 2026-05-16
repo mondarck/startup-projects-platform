@@ -1,6 +1,7 @@
 'use client';
 
 import Link from "next/link";
+import Image from "next/image";
 
 export function Footer() {
   return (
@@ -9,7 +10,11 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           {/* About */}
           <div>
-            <h4 className="font-bold text-lg mb-4">عن المنصة</h4>
+            <div className="flex items-center gap-3 mb-4">
+              <Image src="/logoue.webp" alt="جامعة الوادي" width={40} height={40} className="h-10 w-auto object-contain brightness-0 invert" />
+              <Image src="/IncubatorEloued.webp" alt="حاضنة الأعمال" width={40} height={40} className="h-10 w-auto object-contain brightness-0 invert" />
+            </div>
+            <h4 className="font-bold text-lg mb-2">عن المنصة</h4>
             <p className="text-gray-300 text-sm leading-relaxed">
               منصة متخصصة لاستكشاف المشاريع الناشئة والمبتكرة لطلبة جامعة الوادي
             </p>
