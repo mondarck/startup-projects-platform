@@ -1,13 +1,30 @@
 'use client';
 
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+
+interface Stats {
+  totalProjects: number;
+  availableProjects: number;
+  totalStudents: number;
+  activeReservations: number;
+}
 
 export function StatsSection() {
-  const stats = [
-    { label: "المشاريع الكلية", value: "3,000+", color: "from-primary" },
-    { label: "المشاريع المتاحة", value: "1,856", color: "from-secondary" },
-    { label: "الطلبة المسجلين", value: "5,000+", color: "from-accent" },
-    { label: "الحجوزات النشطة", value: "245", color: "from-purple-600" },
+  const [stats, setStats] = useState<Stats | null>(null);
+
+  useEffect(() => {
+    fetch("/api/stats")
+      .then((r) => r.json())
+      .then((d) => { if (d.success) setStats(d.data); })
+      .catch(() => {});
+  }, []);
+
+  const items = [
+    { label: "المشاريع الكلية", value: stats ? stats.totalProjects.toLocaleString("ar-DZ") : "…", color: "from-primary" },
+    { label: "المشاريع المتاحة", value: stats ? stats.availableProjects.toLocaleString("ar-DZ") : "…", color: "from-secondary" },
+    { label: "الطلبة المسجلين", value: stats ? stats.totalStudents.toLocaleString("ar-DZ") : "…", color: "from-accent" },
+    { label: "الحجوزات النشطة", value: stats ? stats.activeReservations.toLocaleString("ar-DZ") : "…", color: "from-purple-600" },
   ];
 
   return (
@@ -23,7 +40,7 @@ export function StatsSection() {
         </motion.h2>
 
         <div className="grid md:grid-cols-4 gap-8">
-          {stats.map((stat, index) => (
+          {items.map((stat, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, scale: 0.9 }}
