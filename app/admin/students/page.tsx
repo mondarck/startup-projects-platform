@@ -142,7 +142,17 @@ export default function StudentsPage() {
                       </td>
                       <td className="px-4 py-3 text-sm">
                         {student.reservation ? (
-                          <span className="text-secondary font-semibold">#{student.reservation.projectNumber} {student.reservation.projectName}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-secondary font-semibold">#{student.reservation.projectNumber} {student.reservation.projectName}</span>
+                            <button
+                              onClick={() => handleAction(student.id, "cancel_reservation")}
+                              disabled={actionLoading === student.id + "cancel_reservation"}
+                              title="إلغاء الحجز"
+                              className="px-2 py-0.5 bg-red-100 text-red-600 text-xs rounded-lg hover:bg-red-200 transition disabled:opacity-50 shrink-0"
+                            >
+                              {actionLoading === student.id + "cancel_reservation" ? "..." : "إلغاء"}
+                            </button>
+                          </div>
                         ) : (
                           <span className="text-gray-400">—</span>
                         )}
