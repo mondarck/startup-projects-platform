@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
       prisma.user.groupBy({
         by: ["facultyId"],
         _count: { facultyId: true },
-        where: { status: "active", facultyId: { not: null } },
+        where: { status: "active" },
       }),
       prisma.project.groupBy({
         by: ["categoryAr"],
