@@ -113,6 +113,7 @@ export default function StudentsPage() {
                 <tr>
                   <th className="px-4 py-3 text-right">الطالب</th>
                   <th className="px-4 py-3 text-right">البريد الإلكتروني</th>
+                  <th className="px-4 py-3 text-right">رقم الهاتف</th>
                   <th className="px-4 py-3 text-right">الكلية</th>
                   <th className="px-4 py-3 text-right">الحالة</th>
                   <th className="px-4 py-3 text-right">المشروع</th>
@@ -134,6 +135,7 @@ export default function StudentsPage() {
                         <div className="text-xs text-gray-400">{student.universityId}</div>
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-600">{student.email}</td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{student.phone || "—"}</td>
                       <td className="px-4 py-3 text-sm text-gray-600">{student.faculty}</td>
                       <td className="px-4 py-3">
                         <span className={`px-2 py-1 rounded-full text-xs font-semibold ${statusColors[student.status] ?? "bg-gray-100"}`}>

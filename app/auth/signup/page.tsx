@@ -84,7 +84,7 @@ export default function SignupPage() {
           <div className="text-6xl mb-4">🎉</div>
           <h2 className="text-2xl font-bold text-dark mb-3">تم التسجيل بنجاح!</h2>
           <p className="text-gray-500 mb-6">
-            تم إنشاء حسابك. في انتظار تفعيل الحساب من قبل المشرف. ستتلقى إشعاراً عند التفعيل.
+            تم إنشاء حسابك بنجاح، سيتم تفعيله بعد لحظات بعد التحقق من معلوماتك.
           </p>
           <Link href="/auth/login" className="px-8 py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary-dark transition">
             الذهاب لتسجيل الدخول
