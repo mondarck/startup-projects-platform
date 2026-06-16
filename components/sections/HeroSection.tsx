@@ -1,6 +1,7 @@
 'use client';
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 
 export function HeroSection() {
@@ -59,8 +60,14 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="hidden md:flex justify-center"
         >
-          <div className="relative w-full h-96 bg-gradient-to-br from-primary to-secondary rounded-2xl shadow-2xl flex items-center justify-center">
-            <div className="text-6xl">🚀</div>
+          <div className="relative w-full h-96 bg-gradient-to-br from-primary to-secondary rounded-2xl shadow-2xl flex items-center justify-center overflow-hidden">
+            <Image
+              src="/IncubatorEloued.webp"
+              alt="Incubator Eloued"
+              fill
+              className="object-contain p-8"
+              priority
+            />
           </div>
         </motion.div>
       </div>
